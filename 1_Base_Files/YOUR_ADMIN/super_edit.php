@@ -263,7 +263,7 @@
           zen_db_perform(TABLE_ORDERS, $new_order);
 
           // get new order ID to use with other split actions
-          $new_order_id = mysql_insert_id();
+          $new_order_id = (SUPER_ORDERS_MYSQLI ? mysqli_insert_id($db->link) : mysql_insert_id()); // Change for ZenCart 1.5.3 and beyond.
 		  $messageStack->add_session(SUCCESS_ORDER_SPLIT . ' ' . $new_order_id, 'success');
 		  $db->Execute("UPDATE " . TABLE_ORDERS . " SET
                           split_from_order = '" . $new_order_id . "', is_parent= '1'
@@ -435,7 +435,7 @@ if ($update_status_history->fields['customer_notified'] == -1) {
 
 	$this_history_id = $update_status_history->fields['orders_status_history_id'];
     $this_status = zen_db_prepare_input($_POST['status_' . $this_history_id]);
-	$this_comments = mysql_real_escape_string(stripslashes($_POST['comments_' . $this_history_id])); 
+	$this_comments = (SUPER_ORDERS_MYSQLI ? mysqli_real_escape_string($db->link, stripslashes($_POST['comments_' . $this_history_id])) : mysql_real_escape_string(stripslashes($_POST['comments_' . $this_history_id]))) ; 
 	$this_comments= $_POST['comments' . $this_history_id]=str_replace("\\r\\n","\n",$this_comments);
 	$this_comments= $_POST['comments' . $this_history_id]=str_replace("\\","",$this_comments);
 	$this_delete = zen_db_prepare_input($_POST['delete_' . $this_history_id]);

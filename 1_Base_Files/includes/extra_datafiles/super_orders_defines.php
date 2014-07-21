@@ -29,3 +29,7 @@ define('TABLE_SO_PURCHASE_ORDERS', DB_PREFIX . 'so_purchase_orders');
 define('TABLE_SO_PAYMENTS', DB_PREFIX . 'so_payments');
 define('TABLE_SO_PAYMENT_TYPES', DB_PREFIX . 'so_payment_types');
 define('TABLE_SO_REFUNDS', DB_PREFIX . 'so_refunds');
+
+// Version Check to see if mysql_ or mysqli_ functions should be performed.
+define('SUPER_ORDERS_MYSQLI', (substr(PROJECT_VERSION_MAJOR.'.'.PROJECT_VERSION_MINOR, 0, 5) >= "1.5.3")); 
+// Since ZenCart v1.5.3, MySQLi is being used instead of MySQL as mysql functions are being removed from PHP soon.. This is being used to check whether to use mysql or mysqli

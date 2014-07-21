@@ -76,4 +76,7 @@ define('BOX_LOCALIZATION_MANAGE_PAYMENT_TYPES','Manage Payment Types');
 
 // DO NOT EDIT!
 define('SUPER_ORDERS_VERSION', '4.0.4');
+define('SUPER_ORDERS_MYSQLI', (substr(PROJECT_VERSION_MAJOR.'.'.PROJECT_VERSION_MINOR, 0, 5) >= "1.5.3")); 
+// Since ZenCart v1.5.3, MySQLi is being used instead of MySQL as mysql functions are being removed from PHP soon.. This is being used to check whether to use mysql or mysqli
+
 // DO NOT EDIT!

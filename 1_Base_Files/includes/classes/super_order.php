@@ -393,7 +393,7 @@ class super_order {
 
     zen_db_perform(TABLE_SO_PAYMENTS, $new_payment);
 
-    $new_index = mysql_insert_id();
+    $new_index = (SUPER_ORDERS_MYSQLI ? mysqli_insert_id($db->link) : mysql_insert_id()); // Change for ZenCart 1.5.3 and beyond.
     return $new_index;
   }
 
@@ -434,7 +434,7 @@ class super_order {
 
     zen_db_perform(TABLE_SO_PURCHASE_ORDERS, $add_po);
 
-    $new_index = mysql_insert_id();
+    $new_index = (SUPER_ORDERS_MYSQLI ? mysqli_insert_id($db->link) : mysql_insert_id()); // Change for ZenCart 1.5.3 and beyond
     return $new_index;
   }
 
@@ -467,7 +467,7 @@ class super_order {
 
     zen_db_perform(TABLE_SO_REFUNDS, $new_refund);
 
-    $new_index = mysql_insert_id();
+    $new_index = (SUPER_ORDERS_MYSQLI ? mysqli_insert_id($db->link) : mysql_insert_id()); // Change for ZenCart 1.5.3 and beyond.
     return $new_index;
   }
 
