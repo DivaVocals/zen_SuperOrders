@@ -1213,11 +1213,13 @@ function couponpopupWindow(url) {
 				<td align="right">&nbsp;</td>
 				<td> 
 <!-- BOF added to get currency type and value for totals -->
-                <?php $dbc="select currency, currency_value from " . TABLE_ORDERS . " where orders_id ='" . $_GET['oID'] . "'";
-                $result = mysql_query($dbc);
-                $row = mysql_fetch_array ($result, MYSQL_NUM);
-                $cu = $row[0];
-                $cv = $row[1];
+                <?php 
+// bof -- Change for ZenCart 1.5.3 by retched
+// Fixed for mySQLi being used, instead uses innate $db
+		$dbc= $db->execute("select currency, currency_value from " . TABLE_ORDERS . " where orders_id ='" . $_GET['oID'] . "'");
+                $cu = $dbc->fields['currency'];
+                $cv = $dbc->fields['currency_value'];
+// eof -- Change for ZenCart 1.5.3 by retched
                 ?>
 <!-- EOF added to get currency type and value for totals -->
 				</td>
