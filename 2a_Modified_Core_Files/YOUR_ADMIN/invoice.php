@@ -352,7 +352,7 @@ function couponpopupWindow(url) {
 
 <!-- BOF added to get currency type and value for totals (modified for ZenCart 1.5.3 and beyond by retched) -->
                 <?php 
-                $dbc= $db->Execute("select currency, currency_value from " . TABLE_ORDERS . " where orders_id ='" . $_GET['oID'] . "'"_;
+                $dbc= $db->Execute("select currency, currency_value from " . TABLE_ORDERS . " where orders_id ='" . $_GET['oID'] . "'");
                 $cu = $dbc->fields['currency'];
                 $cv = $dbc->fields['currency_value'];
                 ?>
