@@ -320,7 +320,7 @@ function zen_datetime_long($raw_date = 'now') {
 /////////////////
 // Function    : zen_db_delete
 // Arguments   : Zen DB table, SQL "where" parameters
-// Return      : mysqli_affected_rows() OR mysql_affected_rows()
+// Return      : none
 // Description : Deletes a row or rows from the specified $table based on the $parameters
 /////////////////
 function zen_db_delete($table, $parameters) {
@@ -328,8 +328,7 @@ function zen_db_delete($table, $parameters) {
 
   $db->Execute('delete from ' . $table . ' where ' . $parameters);
 
-  return (SUPER_ORDERS_MYSQLI ? mysqli_affected_rows($db->link) : mysql_affected_rows()); // Change for ZenCart 1.5.3 and beyond.
-
+  return;
 }
 
 

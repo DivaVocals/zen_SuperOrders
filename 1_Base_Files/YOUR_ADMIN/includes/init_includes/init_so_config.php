@@ -10,9 +10,9 @@
     $db->Execute($sql);
 
 /* Upgrade DB cleanup - Remove existing Super Orders payment types */
-$result = (SUPER_ORDERS_MYSQLI ? $mysqli->query("SHOW TABLES LIKE '".DB_PREFIX."so_payment_types'") : mysql_query("SHOW TABLES LIKE '".DB_PREFIX."so_payment_types'"));
+$result = $db->Execute("SHOW TABLES LIKE '".DB_PREFIX."so_payment_types'");
 
-if (( SUPER_ORDERS_MYSQLI ? $result->num_rows : mysql_num_rows($result) )) {
+if ($result->RecordCount) {
     $sql = "TRUNCATE TABLE ".DB_PREFIX."so_payment_types";
     $db->Execute($sql);
 }
