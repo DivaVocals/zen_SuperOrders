@@ -101,6 +101,20 @@
       kill.disabled = true;
     }
   }
+
+	function checkByParent(aId) {
+		var collection = document.getElementById(aId).getElementsByTagName('INPUT');
+		for (var x=0; x<collection.length; x++) {
+			if (collection[x].type.toUpperCase()=='CHECKBOX') {
+				if (collection[x].checked == true)
+
+				{
+					collection[x].checked = false;
+				}
+				else { collection[x].checked = true; }
+			}
+		}
+	}
 // -->
 </script>
 </head>
@@ -293,7 +307,6 @@ if (isset($_GET['start_date']) ) {
 
   $orders = $db->Execute($orders_query_raw);
   if ($orders->RecordCount() > 0) {
-    $checked = ($_GET['checked'] == 1 ? true : false);
 ?>
       <tr>
         <td><table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -330,18 +343,16 @@ if (isset($_GET['start_date']) ) {
           <tr>
             <td class="main" valign="bottom"><?php 
 	    echo TEXT_TOTAL_ORDERS . '<strong>' . $orders->RecordCount() . '</strong>' . '&nbsp;&nbsp;';
-              if ($checked) {
-                echo '<INPUT class="normal_button button" TYPE="BUTTON" VALUE="' . BUTTON_UNCHECK_ALL . '" ONCLICK="window.location.href=\'' . zen_href_link(FILENAME_SUPER_BATCH_STATUS, zen_get_all_get_params(array('checked')) . 'checked=0', 'NONSSL') . '\'">';
-              } else {
-                echo '<INPUT class="normal_button button" TYPE="BUTTON" VALUE="' . BUTTON_CHECK_ALL . '" ONCLICK="window.location.href=\'' . zen_href_link(FILENAME_SUPER_BATCH_STATUS, zen_get_all_get_params(array('checked')) . 'checked=1', 'NONSSL') . '\'">';
-              }
+            echo '<INPUT class="normal_button button" TYPE="BUTTON" VALUE="' . BUTTON_CHECK_ALL . '" ONCLICK="checkByParent(\'ordersList\');">';
+
             ?></td>
             <td class="main" align="right" valign="bottom"><strong><?php echo zen_image(DIR_WS_IMAGES . 'icon_details.gif', ICON_ORDER_DETAILS) . '&nbsp;' . ICON_ORDER_DETAILS; ?></strong></td>
           </tr>
         </table></td>
       </tr>
       <tr>
-        <td><table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <td> <div id="ordersList">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
           <tr>
             <td><table border="0" cellpadding="0" cellspacing="0" width="100%">
               <tr>
@@ -359,7 +370,7 @@ if (isset($_GET['start_date']) ) {
 ?>
                   <tr class="dataTableRow" onMouseOver="rowOverEffect(this);this.style.cursor='default'" onMouseOut="rowOutEffect(this)">
                     <td class="dataTableContent" align="left"><?php 
-		    echo zen_draw_checkbox_field('batch_order_numbers[' . $orders->fields['orders_id'] . ']', 'yes', $checked);
+		    echo zen_draw_checkbox_field('batch_order_numbers[' . $orders->fields['orders_id'] . ']', 'yes', FALSE);
                       echo $orders->fields['orders_id'];
                     ?></td>
                     <td class="dataTableContent" align="right"><?php echo '[' . $orders->fields['customers_id'] . ']'; ?></td>
@@ -381,7 +392,8 @@ if (isset($_GET['start_date']) ) {
               <tr>
                 <td><?php echo zen_draw_separator('pixel_trans.gif', 1, 10); ?></td>
               </tr>
-            </table></td>
+            </table></div>
+			</td>
           </tr>
         </table></td>
       </tr>
