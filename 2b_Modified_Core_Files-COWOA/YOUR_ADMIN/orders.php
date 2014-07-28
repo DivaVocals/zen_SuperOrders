@@ -1322,14 +1322,13 @@ function couponpopupWindow(url) {
 			<tr>
 				<td align="right">&nbsp;</td>
 				<td> 
-<!-- BOF added to get currency type and value for totals -->
-                <?php $dbc="select currency, currency_value from " . TABLE_ORDERS . " where orders_id ='" . $_GET['oID'] . "'";
-                $result = mysql_query($dbc);
-                $row = mysql_fetch_array ($result, MYSQL_NUM);
-                $cu = $row[0];
-                $cv = $row[1];
+<!-- BOF added to get currency type and value for totals (modified for ZenCart 1.5.3 and beyond by retched) -->
+                <?php 
+				$dbc=$db->Execute("select currency, currency_value from " . TABLE_ORDERS . " where orders_id ='" . $_GET['oID'] . "'"_;
+                $cu = $dbc->fields['currency'];
+                $cv = $dbc->fields['currency_value'];
                 ?>
-<!-- EOF added to get currency type and value for totals -->
+<!-- EOF added to get currency type and value for totals (modified for ZenCart 1.5.3 and beyond by retched) -->
 				</td>
 			</tr>
 			<tr>               

@@ -18,14 +18,9 @@
 //  available at www.zen-cart.com/license/2_0.txt       		//
 //  or see "license.txt" in the downloaded zip          		//
 //////////////////////////////////////////////////////////////////////////
-//  DESCRIPTION: Contains the Super Orders table defines.		//
-//  NOTE: You should not have to edit anything in this file.		//
+//  DESCRIPTION: Language file definitions for super_batch_status.php	//
 //////////////////////////////////////////////////////////////////////////
-// $Id: super_orders_defines.php v 2010-10-24 $
+// $Id: super_batch_status.php v 2010-10-24 $
 */
 
-// Table names
-define('TABLE_SO_PURCHASE_ORDERS', DB_PREFIX . 'so_purchase_orders');
-define('TABLE_SO_PAYMENTS', DB_PREFIX . 'so_payments');
-define('TABLE_SO_PAYMENT_TYPES', DB_PREFIX . 'so_payment_types');
-define('TABLE_SO_REFUNDS', DB_PREFIX . 'so_refunds');
+define('ERROR_NO_ORDERS', 'Error: No orders selected!');

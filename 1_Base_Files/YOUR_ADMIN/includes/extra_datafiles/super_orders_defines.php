@@ -75,5 +75,5 @@ define('BOX_LOCALIZATION_MANAGE_PAYMENT_TYPES','Manage Payment Types');
 
 
 // DO NOT EDIT!
-define('SUPER_ORDERS_VERSION', '4.0.4');
+define('SUPER_ORDERS_VERSION', '4.0.10');
 // DO NOT EDIT!

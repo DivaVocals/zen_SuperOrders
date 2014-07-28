@@ -15,7 +15,7 @@
   <meta name="description" content=
   "Super Orders is exactly what its name implies: Zen Cart order management on steroids" />
 
-  <title>Super Orders 4.0.9</title>
+  <title>Super Orders 4.0.10</title>
   <link rel="stylesheet" type="text/css" href="includes/css/stylesheet.css" />
   <script type="text/javascript" src="includes/jscript/jscript_tabs.js">
 </script>
@@ -34,7 +34,7 @@
 
 <body>
   <div id="wrapper">
-    <h2>Super Orders 4.0.9</h2>
+    <h2>Super Orders 4.0.10</h2>
     <!--<p>Support thread: <a href="http://www.zen-cart.com/forum/showthread.php?t=44668" target="_blank">http://www.zen-cart.com/forum/showthread.php?p=886839</a><br>
 Download link: <a href="http://www.zen-cart.com/index.php?main_page=product_contrib_info&amp;products_id=257" target="_blank">http://www.zen-cart.com/index.php?main_page=product_contrib_info&amp;products_id=743</a></p>-->
 
@@ -136,11 +136,11 @@ Download link: <a href="http://www.zen-cart.com/index.php?main_page=product_cont
           <p>Ready to get started? Just follow the installation instructions</p>
 
           <div class="boldemphasis">
-            SUPER ORDERS v4.0.6 IS NOT COMPATIBLE WITH VERSIONS OF ZEN CART PRIOR TO ZEN
-            CART 1.5!!<br />
+            SUPER ORDERS v4.0.10 IS NOT COMPATIBLE WITH VERSIONS OF ZEN CART PRIOR TO ZEN
+            CART 1.5.X!!<br />
             <br />
             There will be NO SUPPORT PROVIDED for Zen Cart versions prior to v1.5 with
-            v4.0.6 of Super Orders<br />
+            v4.0.10 of Super Orders.<br />
             <small>(if you are still running an older version of Zen Cart we strongly
             recommend that you upgrade as there have been many security enhancements made
             in Zen Cart v1.5.)</small>
@@ -1168,6 +1168,8 @@ Download link: <a href="http://www.zen-cart.com/index.php?main_page=product_cont
             <li>
             1_Base_Files/YOUR_ADMIN_FOLDER/includes/languages/english/super_batch_forms.php</li>
 
+			<li>1_Base_Files/YOUR_ADMIN_FOLDER/includes/languages/english/super_batch_pages.php</li>
+
             <li>
             1_Base_Files/YOUR_ADMIN_FOLDER/includes/languages/english/order_status_email.php</li>
 
@@ -1256,17 +1258,32 @@ Download link: <a href="http://www.zen-cart.com/index.php?main_page=product_cont
             <li>A Ballanger (http://www.zen-cart.com/member.php?115838)</li>
 
             <li>Numinix Web Development Ltd. (http://www.numinix.com)</li>
+
+			<li>Paul Williams - retched</li>
           </ul>
         </fieldset>
 
         <fieldset>
           <legend>Change Log</legend>
-          <h3>v4.0.9</h3>
+          <h3>v4.0.10</h3>
+
+          <ul>
+            <li>Removed refreshing of page for /YOUR_ADMIN/super_batch_forms.php
+			and /YOUR_ADMIN/super_batch_status.php. Now Javascript will take 
+			over and check all the boxes on a page.</li>
+			<li>Removed all mysql_ functions and relegated any lookups to the 
+			innate ZenCart DB class. Improved support for ZenCart 1.5.2 and
+			1.5.3.</li>
+			<li>Added missing define for 'TEXT_NO_ORDERS' for super_batch_forms.php
+			</li>
+          </ul>
+
+		  <h3>v4.0.9</h3>
 
           <ul>
             <li>Added support for Store Credit.</li>
             <li>Bug fix in order splitting for handful of discount mods.</li>
-          </ul>          
+          </ul>
 
           <h3>v4.0.8</h3>
 
