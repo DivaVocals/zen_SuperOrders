@@ -36,8 +36,8 @@
         private $firstOrderPageNumber = 1;   
         private $shipTo = '';               
         
-        function PDF($orientation='P',$unit='mm',$format='A4'){
-            $this->FPDF($orientation,$unit,$format);
+        function PDF($orientation='P',$unit='mm',$size='A4'){
+            $this->FPDF($orientation,$unit,$size);
             $this->SetMargins(18, 63, 18);
         }
                            
