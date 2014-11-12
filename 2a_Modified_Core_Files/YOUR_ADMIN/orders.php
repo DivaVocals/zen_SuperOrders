@@ -24,7 +24,10 @@
 */
 
   require('includes/application_top.php');
-  
+
+  // unset variable which is sometimes tainted by bad plugins like magneticOne tools
+  if (isset($module)) unset($module);
+
   require(DIR_WS_CLASSES . 'currencies.php');
   $currencies = new currencies();
    
@@ -331,7 +334,7 @@ if (TY_TRACKER == 'True') {
 //<!-- Begin Super Orders Modification (Minor formatting change) //-->
             EMAIL_TEXT_INVOICE_URL . ' ' . zen_catalog_href_link(FILENAME_CATALOG_ACCOUNT_HISTORY_INFO, 'order_id=' . $oID, 'SSL') . "\n\n" .
             EMAIL_TEXT_DATE_ORDERED . ' ' . zen_date_long($check_status->fields['date_purchased']) . "\n\n" .
-            strip_tags($notify_comments) .
+            $notify_comments .
             EMAIL_TEXT_STATUS_UPDATED . sprintf(EMAIL_TEXT_STATUS_LABEL, $orders_status_array[$status] ) .
             EMAIL_TEXT_STATUS_PLEASE_REPLY;
 
@@ -608,6 +611,7 @@ function couponpopupWindow(url) {
             </td>
           </form>
 
+          </tr>
         </table></td>
       </tr>
 <!-- search -->
@@ -1011,7 +1015,7 @@ function couponpopupWindow(url) {
 	 $parent_child= $db->Execute("select split_from_order, is_parent
 							from " . TABLE_ORDERS . "
 							where orders_id = '" . $oID . "'");
-    if (method_exists($module, 'admin_notification')&&($parent_child->fields['is_parent'])) {
+      if (is_object($module) && method_exists($module, 'admin_notification')) {
 ?>
       <tr>
         <td><?php echo zen_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
