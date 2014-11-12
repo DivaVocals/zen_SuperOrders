@@ -94,39 +94,40 @@
 <script language="javascript" src="includes/menu.js"></script>
 <script language="javascript" src="includes/general.js"></script>
 <script type="text/javascript">
-<?php
-    /* BEGIN addition added javascript for forms */
-?>     
-  
-	
-	 function GenerateBatchForms(action){
-        var batch_form = document.forms["batch_print"];
-		 
-		if(action=="invoicepages"){
-			batch_form.action = 'super_batch_pages.php';
-		}
-		else{
-        	//batch_form.action = (batch_form.action).split('?')[0] + '?action=' + action;
-			batch_form.action = 'super_batch_forms.php?action=' + action;
-		}	
-        batch_form.submit();  
-    }
-	
+  <?php
+  /* BEGIN addition added javascript for forms */
+  ?>
 
-	function checkByParent(aId) {
-		var collection = document.getElementById(aId).getElementsByTagName('INPUT');
-		for (var x=0; x<collection.length; x++) {
-			if (collection[x].type.toUpperCase()=='CHECKBOX') {
-				if (collection[x].checked == true)
-				{
-					collection[x].checked = false;
-				}
-				else { collection[x].checked = true; }
-			}
-		}
-	}
-													 
-<?php /* END addition */ ?> 
+
+        function GenerateBatchForms(action) {
+          var batch_form = document.forms["batch_print"];
+
+          if (action == "invoicepages") {
+            batch_form.action = 'super_batch_pages.php';
+          }
+          else {
+            //batch_form.action = (batch_form.action).split('?')[0] + '?action=' + action;
+            batch_form.action = 'super_batch_forms.php?action=' + action;
+          }
+          batch_form.submit();
+        }
+
+        function checkByParent(aId) {
+          var collection = document.getElementById(aId).getElementsByTagName('INPUT');
+          for (var x=0; x<collection.length; x++) {
+            if (collection[x].type.toUpperCase()=='CHECKBOX') {
+              if (collection[x].checked == true) {
+                collection[x].checked = false;
+              } else {
+                collection[x].checked = true;
+              }
+            }
+          }
+        }
+
+<?php /* END addition */ ?>
+      </script>
+      <script type="text/javascript">
   <!--
   function init() {
     cssjsmenu('navbar');
