@@ -17,15 +17,18 @@
 //  ~ Admin comment editing						//
 //  ~ Improved HTML and look & feel					//
 //////////////////////////////////////////////////////////////////////////
- * @copyright Copyright 2003-2011 Zen Cart Development Team
+ * @copyright Copyright 2003-2013 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: orders.php 19530 2011-09-19 13:52:37Z ajeh $
- * @version $Id: Integrated COWOA v2.4  - 2007 - 2013
-*/
+ * @version GIT: $Id: Author: DrByte  Wed Nov 6 21:04:33 2013 -0500 Modified in v1.5.2 $
+ * @version $Id: Integrated COWOA v2.6
+ */
 
   require('includes/application_top.php');
-  
+
+  // unset variable which is sometimes tainted by bad plugins like magneticOne tools
+  if (isset($module)) unset($module);
+
   require(DIR_WS_CLASSES . 'currencies.php');
   $currencies = new currencies();
    
@@ -118,9 +121,9 @@
             $zc_max_days = ($chk_products_download_time->fields['products_attributes_maxdays'] == 0 ? 0 : zen_date_diff($check_status->fields['date_purchased'], date('Y-m-d H:i:s', time())) + $chk_products_download_time->fields['products_attributes_maxdays']);
             $update_downloads_query = "update " . TABLE_ORDERS_PRODUCTS_DOWNLOAD . " set download_maxdays='" . $zc_max_days . "', download_count='" . $chk_products_download_time->fields['products_attributes_maxcount'] . "' where orders_id='" . $_GET['oID'] . "' and orders_products_download_id='" . $_GET['download_reset_on'] . "'";
           }
+
           $db->Execute($update_downloads_query);
           unset($_GET['download_reset_on']);
-
           $messageStack->add_session(SUCCESS_ORDER_UPDATED_DOWNLOAD_ON, 'success');
           zen_redirect(zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('action')) . 'action=edit', 'NONSSL'));
         }
@@ -132,6 +135,7 @@
           $update_downloads_query = "update " . TABLE_ORDERS_PRODUCTS_DOWNLOAD . " set download_count='0' where orders_id='" . $_GET['oID'] . "' and orders_products_download_id='" . $_GET['download_reset_off'] . "'";
           $db->Execute($update_downloads_query);
           unset($_GET['download_reset_off']);
+
           $messageStack->add_session(SUCCESS_ORDER_UPDATED_DOWNLOAD_OFF, 'success');
           zen_redirect(zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('action')) . 'action=edit', 'NONSSL'));
         }
@@ -182,60 +186,6 @@ if (TY_TRACKER == 'True') {
 				}
 // END TY TRACKER 1 - DEFINE TRACKING VALUES, INCLUDE DATABASE FIELDS IN STATUS QUERY, & E-MAIL TRACKING INFORMATION  ----------------------------------------------
             //send emails
-// BOF COWOA SEND ORDER_STATUS EMAIL
-if (COWOA_ORDER_STATUS == 'true') {
-    if ($check_status->fields['COWOA_order'] == 1)  {
-  
-            $message =
-            EMAIL_TEXT_ORDER_NUMBER . ' ' . $oID . "\n\n" .
-            EMAIL_TEXT_INVOICE_URL . ' ' . zen_catalog_href_link(FILENAME_ORDER_STATUS, 'order_id=' . $oID, 'SSL') . "\n\n" .
-            EMAIL_TEXT_DATE_ORDERED . ' ' . zen_date_long($check_status->fields['date_purchased']) . "\n\n" .
-      strip_tags($notify_comments) .
-      EMAIL_TEXT_STATUS_UPDATED . sprintf(EMAIL_TEXT_STATUS_LABEL, $orders_status_array[$status] ) .
-      EMAIL_TEXT_STATUS_PLEASE_REPLY;
-
-          $html_msg['EMAIL_CUSTOMERS_NAME']    = $check_status->fields['customers_name'];
-          $html_msg['EMAIL_TEXT_ORDER_NUMBER'] = EMAIL_TEXT_ORDER_NUMBER . ' ' . $oID;
-          $html_msg['EMAIL_TEXT_INVOICE_URL']  = '<a href="' . zen_catalog_href_link(FILENAME_ORDER_STATUS, 'order_id=' . $oID, 'SSL') .'">'.str_replace(':','','Click here to check the status of your order:').'</a>';
-          $html_msg['EMAIL_TEXT_DATE_ORDERED'] = EMAIL_TEXT_DATE_ORDERED . ' ' . zen_date_long($check_status->fields['date_purchased']);
-          $html_msg['EMAIL_TEXT_STATUS_COMMENTS'] = nl2br($notify_comments);
-          $html_msg['EMAIL_TEXT_STATUS_UPDATED'] = str_replace('\n','', EMAIL_TEXT_STATUS_UPDATED);
-          $html_msg['EMAIL_TEXT_STATUS_LABEL'] = str_replace('\n','', sprintf(EMAIL_TEXT_STATUS_LABEL, $orders_status_array[$status] ));
-          $html_msg['EMAIL_TEXT_NEW_STATUS'] = $orders_status_array[$status];
-          $html_msg['EMAIL_TEXT_STATUS_PLEASE_REPLY'] = str_replace('\n','', EMAIL_TEXT_STATUS_PLEASE_REPLY);
-
-            zen_mail($check_status->fields['customers_name'], $check_status->fields['customers_email_address'], EMAIL_TEXT_SUBJECT . ' #' . $oID, $message, STORE_NAME, EMAIL_FROM, $html_msg, 'order_status');
-            $customer_notified = '1';
-          }
-    } 
-if (COWOA_ORDER_STATUS == 'false') {
-      if ($check_status->fields['COWOA_order'] == 1)  {
-
-          $htmlInvoiceURL='';
-          $htmlInvoiceValue='';
-          $message =
-          EMAIL_TEXT_ORDER_NUMBER . ' ' . $oID . "\n\n" .
-          EMAIL_TEXT_DATE_ORDERED . ' ' . zen_date_long($check_status->fields['date_purchased']) . "\n\n" .
-          strip_tags($notify_comments) .
-          EMAIL_TEXT_STATUS_UPDATED . sprintf(EMAIL_TEXT_STATUS_LABEL, $orders_status_array[$status] ) .
-          EMAIL_TEXT_STATUS_PLEASE_REPLY;
-          $html_msg['EMAIL_CUSTOMERS_NAME']    = $check_status->fields['customers_name'];
-          $html_msg['EMAIL_TEXT_ORDER_NUMBER'] = EMAIL_TEXT_ORDER_NUMBER . ' ' . $oID;
-          $html_msg['INTRO_URL_TEXT']        = '';
-          $html_msg['INTRO_URL_VALUE']       = '';
-          $html_msg['EMAIL_TEXT_DATE_ORDERED'] = EMAIL_TEXT_DATE_ORDERED . ' ' . zen_date_long($check_status->fields['date_purchased']);
-          $html_msg['EMAIL_TEXT_STATUS_COMMENTS'] = nl2br($notify_comments);
-          $html_msg['EMAIL_TEXT_STATUS_UPDATED'] = str_replace('\n','', EMAIL_TEXT_STATUS_UPDATED);
-          $html_msg['EMAIL_TEXT_STATUS_LABEL'] = str_replace('\n','', sprintf(EMAIL_TEXT_STATUS_LABEL, $orders_status_array[$status] ));
-          $html_msg['EMAIL_TEXT_NEW_STATUS'] = $orders_status_array[$status];
-          $html_msg['EMAIL_TEXT_STATUS_PLEASE_REPLY'] = str_replace('\n','', EMAIL_TEXT_STATUS_PLEASE_REPLY);
-
-            zen_mail($check_status->fields['customers_name'], $check_status->fields['customers_email_address'], EMAIL_TEXT_SUBJECT . ' #' . $oID, $message, STORE_NAME, EMAIL_FROM, $html_msg, 'order_status');
-            $customer_notified = '1';
-          }    
-    }
-// EOF COWOA SEND ORDER_STATUS EMAIL    
-    if ($check_status->fields['COWOA_order'] != 1)  {
             $message =
 //<!-- Begin Ty Package Tracker Modification (Minor formatting change) //-->
       	    STORE_NAME . " " . EMAIL_TEXT_ORDER_NUMBER . ' ' . $oID . "\n\n" .
@@ -259,8 +209,7 @@ if (COWOA_ORDER_STATUS == 'false') {
 
             zen_mail($check_status->fields['customers_name'], $check_status->fields['customers_email_address'], EMAIL_TEXT_SUBJECT . ' #' . $oID, $message, STORE_NAME, EMAIL_FROM, $html_msg, 'order_status');
             $customer_notified = '1';
-			}
-
+  
             // PayPal Trans ID, if any
             $sql = "select txn_id, parent_txn_id from " . TABLE_PAYPAL . " where order_id = :orderID order by last_modified DESC, date_added DESC, parent_txn_id DESC, paypal_ipn_id DESC ";
             $sql = $db->bindVars($sql, ':orderID', $oID, 'integer');
@@ -319,6 +268,7 @@ if (COWOA_ORDER_STATUS == 'false') {
          if ($status == DOWNLOADS_ORDERS_STATUS_UPDATED_VALUE) {
 
             // adjust download_maxdays based on current date
+  
             $chk_downloads_query = "SELECT opd.*, op.products_id from " . TABLE_ORDERS_PRODUCTS_DOWNLOAD . " opd, " . TABLE_ORDERS_PRODUCTS . " op
                                     WHERE op.orders_id='" . (int)$oID . "'
                                     and opd.orders_products_id = op.orders_products_id";
@@ -432,14 +382,14 @@ if (COWOA_ORDER_STATUS == 'false') {
           }    
     }
 // EOF COWOA SEND ORDER_STATUS EMAIL    
+
+// BOF STANDARD SEND ORDER_STATUS EMAIL
     if ($check_status->fields['COWOA_order'] != 1)  {
             $message =
-//<!-- Begin Super Orders Modification (Minor formatting change) //-->
-            STORE_NAME . " " . EMAIL_TEXT_ORDER_NUMBER . ' ' . $oID . "\n\n" .
-//<!-- Begin Super Orders Modification (Minor formatting change) //-->
+            EMAIL_TEXT_ORDER_NUMBER . ' ' . $oID . "\n\n" .
             EMAIL_TEXT_INVOICE_URL . ' ' . zen_catalog_href_link(FILENAME_CATALOG_ACCOUNT_HISTORY_INFO, 'order_id=' . $oID, 'SSL') . "\n\n" .
             EMAIL_TEXT_DATE_ORDERED . ' ' . zen_date_long($check_status->fields['date_purchased']) . "\n\n" .
-            strip_tags($notify_comments) .
+            $notify_comments .
             EMAIL_TEXT_STATUS_UPDATED . sprintf(EMAIL_TEXT_STATUS_LABEL, $orders_status_array[$status] ) .
             EMAIL_TEXT_STATUS_PLEASE_REPLY;
 
@@ -456,7 +406,8 @@ if (COWOA_ORDER_STATUS == 'false') {
 
             zen_mail($check_status->fields['customers_name'], $check_status->fields['customers_email_address'], EMAIL_TEXT_SUBJECT . ' #' . $oID, $message, STORE_NAME, EMAIL_FROM, $html_msg, 'order_status');
             $customer_notified = '1';
-			}
+	    }
+// EOF STANDARD SEND ORDER_STATUS EMAIL
 
             // PayPal Trans ID, if any
             $sql = "select txn_id, parent_txn_id from " . TABLE_PAYPAL . " where order_id = :orderID order by last_modified DESC, date_added DESC, parent_txn_id DESC, paypal_ipn_id DESC ";
@@ -485,7 +436,6 @@ if (COWOA_ORDER_STATUS == 'false') {
                       '" . zen_db_input($comments)  . "')");
           $order_updated = true;
         }
-
         // trigger any appropriate updates which should be sent back to the payment gateway:
         $order = new order((int)$oID);
         if ($order->info['payment_module_code']) {
@@ -669,7 +619,6 @@ function couponpopupWindow(url) {
 ?>
 </div>
 <!-- header_eof //-->
-
 <!-- body //-->
 <table border="0" width="100%" cellspacing="2" cellpadding="2">
 <!-- body_text //-->
@@ -719,17 +668,19 @@ function couponpopupWindow(url) {
             </td>
           </form>
 
+          </tr>
         </table></td>
       </tr>
 <!-- search -->
 <?php } ?>
+
+
   <?php
   /*
   ** ORDER DETAIL DISPLAY
   */
   if (($action == 'edit') && ($order_exists == true)) {
     $order = new order ($oID);
-
     if ($order->info['payment_module_code']) {
       if (file_exists(DIR_FS_CATALOG_MODULES . 'payment/' . $order->info['payment_module_code'] . '.php')) {
         require(DIR_FS_CATALOG_MODULES . 'payment/' . $order->info['payment_module_code'] . '.php');
@@ -1121,7 +1072,7 @@ function couponpopupWindow(url) {
 	 $parent_child= $db->Execute("select split_from_order, is_parent
 							from " . TABLE_ORDERS . "
 							where orders_id = '" . $oID . "'");
-    if (method_exists($module, 'admin_notification')&&($parent_child->fields['is_parent'])) {
+      if (is_object($module) && method_exists($module, 'admin_notification')) {
 ?>
       <tr>
         <td><?php echo zen_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
@@ -1322,13 +1273,16 @@ function couponpopupWindow(url) {
 			<tr>
 				<td align="right">&nbsp;</td>
 				<td> 
-<!-- BOF added to get currency type and value for totals (modified for ZenCart 1.5.3 and beyond by retched) -->
+<!-- BOF added to get currency type and value for totals -->
                 <?php 
-				$dbc=$db->Execute("select currency, currency_value from " . TABLE_ORDERS . " where orders_id ='" . $_GET['oID'] . "'"_;
+// bof -- Change for ZenCart 1.5.3 by retched
+// Fixed for mySQLi being used, instead uses innate $db
+		$dbc= $db->execute("select currency, currency_value from " . TABLE_ORDERS . " where orders_id ='" . $_GET['oID'] . "'");
                 $cu = $dbc->fields['currency'];
                 $cv = $dbc->fields['currency_value'];
+// eof -- Change for ZenCart 1.5.3 by retched
                 ?>
-<!-- EOF added to get currency type and value for totals (modified for ZenCart 1.5.3 and beyond by retched) -->
+<!-- EOF added to get currency type and value for totals -->
 				</td>
 			</tr>
 			<tr>               
@@ -1736,6 +1690,7 @@ function couponpopupWindow(url) {
                           $search . " order by o.orders_id DESC";
 
 //echo '<BR><BR>I SEE B: ' . $orders_query_raw . '<BR><BR>';
+
     } else {
       $orders_query_raw = "select " . $search_distinct . " o.orders_id, o.customers_id, o.customers_name, o.payment_method, o.shipping_method, o.date_purchased, o.last_modified, o.currency, o.currency_value, s.orders_status_name, ot.text as order_total" .
                           $new_fields . "
