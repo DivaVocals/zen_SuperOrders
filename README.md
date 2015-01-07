@@ -1,3 +1,6 @@
+This is a development version of Super Orders. If you install this on your live site, you will need to make sure that you THOROUGHLY test.
+==================================================
+
 zen_SuperOrders
 ===============
 
