@@ -380,7 +380,8 @@ class super_order {
 
 
   function add_payment($payment_number, $payment_name, $payment_amount, $payment_type, $purchase_order_id = false) {
-
+    global $db;
+    
     $new_payment = array('orders_id' => $this->oID,
                          'payment_number' => zen_db_prepare_input($payment_number),
                          'payment_name' => zen_db_prepare_input($payment_name),
