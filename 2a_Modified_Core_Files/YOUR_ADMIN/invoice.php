@@ -62,7 +62,6 @@ if(isset($_GET['oID'])) {
     $orders_status_array[$orders_status->fields['orders_status_id']] = $orders_status->fields['orders_status_name'];
     $orders_status->MoveNext();
   }
-
 ?>
 
 <?php // AJB 2012-05-31 - start (2) // ?>
@@ -79,7 +78,7 @@ if(isset($_GET['oID'])) {
 <html <?php echo HTML_PARAMS; ?>>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=<?php echo CHARSET; ?>">
-<title><?php echo $page_title; ?></title>
+<title><?php echo TITLE; ?></title>
 <link rel="stylesheet" type="text/css" href="includes/stylesheet.css">
 
 <style>

@@ -17,11 +17,11 @@
 //  ~ Admin comment editing						//
 //  ~ Improved HTML and look & feel					//
 //////////////////////////////////////////////////////////////////////////
- * @copyright Copyright 2003-2011 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: orders.php 19530 2011-09-19 13:52:37Z ajeh $
-*/
+ * @version GIT: $Id: Author: DrByte  Jun 30 2014 Modified in v1.5.4 $
+ */
 
   require('includes/application_top.php');
 
@@ -30,7 +30,7 @@
 
   require(DIR_WS_CLASSES . 'currencies.php');
   $currencies = new currencies();
-   
+
   if (isset($_GET['oID'])) $_GET['oID'] = (int)$_GET['oID'];
   if (isset($_GET['download_reset_on'])) $_GET['download_reset_on'] = (int)$_GET['download_reset_on'];
   if (isset($_GET['download_reset_off'])) $_GET['download_reset_off'] = (int)$_GET['download_reset_off'];
@@ -49,6 +49,7 @@
     $orders_status_array[$orders_status->fields['orders_status_id']] = $orders_status->fields['orders_status_name'];
     $orders_status->MoveNext();
   }
+
   $action = (isset($_GET['action']) ? $_GET['action'] : '');
   $order_exists = false;
   if (isset($_GET['oID']) && trim($_GET['oID']) == '') unset($_GET['oID']);
@@ -62,7 +63,7 @@
   }
   if ($oID) {
     $orders = $db->Execute("select orders_id from " . TABLE_ORDERS . "
-                            where orders_id = '" . (int)$oID . "'");
+                              where orders_id = '" . (int)$oID . "'");
     $order_exists = true;
     if ($orders->RecordCount() <= 0) {
       $order_exists = false;
@@ -94,11 +95,11 @@
         zen_redirect(zen_href_link(FILENAME_ORDERS, 'action=edit&oID=' . $oID, 'NONSSL'));
       break;
       case 'edit':
-        // reset single download to on
+      // reset single download to on
         if ($_GET['download_reset_on'] > 0) {
           // adjust download_maxdays based on current date
-          $check_status = $db->Execute("select customers_name, customers_email_address, orders_status, 
-				      date_purchased from " . TABLE_ORDERS . "
+          $check_status = $db->Execute("select customers_name, customers_email_address, orders_status,
+                                      date_purchased from " . TABLE_ORDERS . "
                                       where orders_id = '" . $_GET['oID'] . "'");
 
           // check for existing product attribute download days and max
@@ -108,7 +109,7 @@
           $chk_products_download_time_query = "SELECT pa.products_attributes_id, pa.products_id, pad.products_attributes_filename, pad.products_attributes_maxdays, pad.products_attributes_maxcount
           from " . TABLE_PRODUCTS_ATTRIBUTES . " pa, " . TABLE_PRODUCTS_ATTRIBUTES_DOWNLOAD . " pad
           WHERE pa.products_attributes_id = pad.products_attributes_id
-          and pad.products_attributes_filename = '" . $chk_products_download->fields['orders_products_filename'] . "'
+          and pad.products_attributes_filename = '" . $db->prepare_input($chk_products_download->fields['orders_products_filename']) . "'
           and pa.products_id = '" . (int)$chk_products_download->fields['products_prid'] . "'";
 
           $chk_products_download_time = $db->Execute($chk_products_download_time_query);
@@ -123,10 +124,11 @@
 
           $db->Execute($update_downloads_query);
           unset($_GET['download_reset_on']);
+
           $messageStack->add_session(SUCCESS_ORDER_UPDATED_DOWNLOAD_ON, 'success');
           zen_redirect(zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('action')) . 'action=edit', 'NONSSL'));
         }
-        // reset single download to off
+      // reset single download to off
         if ($_GET['download_reset_off'] > 0) {
           // adjust download_maxdays based on current date
           // *** fix: adjust count not maxdays to cancel download
@@ -351,7 +353,7 @@ if (TY_TRACKER == 'True') {
 
             zen_mail($check_status->fields['customers_name'], $check_status->fields['customers_email_address'], EMAIL_TEXT_SUBJECT . ' #' . $oID, $message, STORE_NAME, EMAIL_FROM, $html_msg, 'order_status');
             $customer_notified = '1';
-  
+
             // PayPal Trans ID, if any
             $sql = "select txn_id, parent_txn_id from " . TABLE_PAYPAL . " where order_id = :orderID order by last_modified DESC, date_added DESC, parent_txn_id DESC, paypal_ipn_id DESC ";
             $sql = $db->bindVars($sql, ':orderID', $oID, 'integer');
@@ -379,6 +381,7 @@ if (TY_TRACKER == 'True') {
                       '" . zen_db_input($comments)  . "')");
           $order_updated = true;
         }
+
         // trigger any appropriate updates which should be sent back to the payment gateway:
         $order = new order((int)$oID);
         if ($order->info['payment_module_code']) {
@@ -404,7 +407,7 @@ if (TY_TRACKER == 'True') {
               $chk_products_download_time_query = "SELECT pa.products_attributes_id, pa.products_id, pad.products_attributes_filename, pad.products_attributes_maxdays, pad.products_attributes_maxcount
                                                     from " . TABLE_PRODUCTS_ATTRIBUTES . " pa, " . TABLE_PRODUCTS_ATTRIBUTES_DOWNLOAD . " pad
                                                     WHERE pa.products_attributes_id = pad.products_attributes_id
-                                                    and pad.products_attributes_filename = '" . $chk_downloads->fields['orders_products_filename'] . "'
+                                                    and pad.products_attributes_filename = '" . $db->prepare_input($chk_downloads->fields['orders_products_filename']) . "'
                                                     and pa.products_id = '" . $chk_downloads->fields['products_id'] . "'";
 
               $chk_products_download_time = $db->Execute($chk_products_download_time_query);
@@ -423,6 +426,7 @@ if (TY_TRACKER == 'True') {
             }
           }
           $messageStack->add_session(SUCCESS_ORDER_UPDATED, 'success');
+          zen_record_admin_activity('Order ' . $oID . ' updated.', 'info');
         } else {
           $messageStack->add_session(WARNING_ORDER_NOT_UPDATED, 'warning');
         }
@@ -430,8 +434,8 @@ if (TY_TRACKER == 'True') {
 }
 // END STOCK COMMENTS
 
-    break;
-   case 'deleteconfirm':
+        break;
+      case 'deleteconfirm':
         // demo active test
         if (zen_admin_demo()) {
           $_GET['action']= '';
@@ -443,7 +447,7 @@ if (TY_TRACKER == 'True') {
         zen_remove_order($oID, $_POST['restock']);
         $so->delete_all_data();
         zen_redirect(zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('oID', 'action')), 'NONSSL'));
-      break;
+        break;
       case 'delete_cvv':
         $delete_cvv = $db->Execute("update " . TABLE_ORDERS . " set cc_cvv = '" . TEXT_DELETE_CVV_REPLACEMENT . "' where orders_id = '" . (int)$_GET['oID'] . "'");
         zen_redirect(zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('action')) . 'action=edit', 'NONSSL'));
@@ -455,6 +459,7 @@ if (TY_TRACKER == 'True') {
         $mask_cc = $db->Execute("update " . TABLE_ORDERS . " set cc_number = '" . $new_num . "' where orders_id = '" . (int)$_GET['oID'] . "'");
         zen_redirect(zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('action')) . 'action=edit', 'NONSSL'));
         break;
+
       case 'doRefund':
         $order = new order($oID);
         if ($order->info['payment_module_code']) {
@@ -467,6 +472,7 @@ if (TY_TRACKER == 'True') {
             }
           }
         }
+        zen_record_admin_activity('Order ' . $oID . ' refund processed. See order comments for details.', 'info');
         zen_redirect(zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('action')) . 'action=edit', 'NONSSL'));
         break;
       case 'doAuth':
@@ -509,6 +515,7 @@ if (TY_TRACKER == 'True') {
             }
           }
         }
+        zen_record_admin_activity('Order ' . $oID . ' void processed. See order comments for details.', 'info');
         zen_redirect(zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('action')) . 'action=edit', 'NONSSL'));
         break;
     }
@@ -557,8 +564,8 @@ function couponpopupWindow(url) {
 <body onLoad="init()">
 <!-- header //-->
 <div class="header-area">
-<?php 
-	require(DIR_WS_INCLUDES . 'header.php'); 
+<?php
+  require(DIR_WS_INCLUDES . 'header.php');
 ?>
 </div>
 <!-- header_eof //-->
@@ -629,12 +636,12 @@ function couponpopupWindow(url) {
 <!-- body_text //-->
 
 
-  <?php
+<?php
   /*
   ** ORDER DETAIL DISPLAY
   */
   if (($action == 'edit') && ($order_exists == true)) {
-    $order = new order ($oID);
+    $order = new order($oID);
     if ($order->info['payment_module_code']) {
       if (file_exists(DIR_FS_CATALOG_MODULES . 'payment/' . $order->info['payment_module_code'] . '.php')) {
         require(DIR_FS_CATALOG_MODULES . 'payment/' . $order->info['payment_module_code'] . '.php');
@@ -1826,7 +1833,7 @@ if (($_GET['page'] == '' or $_GET['page'] <= 1) and $_GET['oID'] != '') {
 
       $contents[] = array('text' => '<br />' . zen_image(DIR_WS_IMAGES . 'pixel_black.gif','','100%','3'));
       $order = new order($oInfo->orders_id);
-      $contents[] = array('text' => 'Products Ordered: ' . sizeof($order->products) );
+      $contents[] = array('text' => TABLE_HEADING_PRODUCTS . ': ' . sizeof($order->products) );
       for ($i=0; $i<sizeof($order->products); $i++) {
         $contents[] = array('text' => $order->products[$i]['qty'] . '&nbsp;x&nbsp;' . $order->products[$i]['name']);
 

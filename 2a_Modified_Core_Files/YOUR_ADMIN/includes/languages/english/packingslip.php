@@ -31,29 +31,37 @@
 //  $Id: packingslip.php 5961 2007-03-03 17:17:39Z ajeh $
 //
 
-// AJB 2012-05-31 - start (1)
+// BEGIN SUPER ORDERS Changes 1 of 5
 define('HEADER_PACKINGSLIP', 'Packing Slip - Order #');
 define('HEADER_PACKINGSLIPS', 'Packing Slips');
-// AJB 2012-05-31 - end (1)
 define('TEXT_PACKING_SLIP', 'Packing Slip');
 define('TABLE_HEADING_IMAGE', 'Image');
+// END SUPER ORDERS Changes 1 of 5
 define('TABLE_HEADING_COMMENTS', 'Comments');
 define('TABLE_HEADING_CUSTOMER_NOTIFIED', 'Customer Notified');
 define('TABLE_HEADING_DATE_ADDED', 'Date Added');
 define('TABLE_HEADING_STATUS', 'Status');
 
 define('TABLE_HEADING_PRODUCTS_MODEL', 'Model');
+// BEGIN SUPER ORDERS Changes 2 of 5
 define('TABLE_HEADING_QTY', 'Qty');
+// END SUPER ORDERS Changes 2 of 5
 define('TABLE_HEADING_PRODUCTS', 'Products');
+// BEGIN SUPER ORDERS Changes 3 of 5
 define('HEADER_CUSTOMER_NOTES', 'Order Notes:');
+// END SUPER ORDERS Changes 3 of 5
 define('ENTRY_CUSTOMER', 'CUSTOMER:');
 
 define('ENTRY_SOLD_TO', 'BILL TO:');
 define('ENTRY_SHIP_TO', 'SHIP TO:');
 define('ENTRY_PAYMENT_METHOD', 'Payment Method:');
+// BEGIN SUPER ORDERS Changes 4 of 5
 define('ENTRY_SHIPPING_METHOD', 'Shipping Method:');
+// END SUPER ORDERS Changes 4 of 5
 define('ENTRY_DATE_PURCHASED', 'Date Ordered:');
 
+// BEGIN SUPER ORDERS Changes 5 of 5
 define('ENTRY_ORDER_ID','Order #');
 define('ENTRY_PRODUCTS_INCL', 'Product(s) included in this shipment');
 define('ENTRY_PRODUCTS_EXCL', 'Product(s) will ship separately');
+// END SUPER ORDERS Changes 5 of 5
