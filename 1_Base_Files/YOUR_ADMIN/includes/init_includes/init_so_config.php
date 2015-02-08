@@ -1,6 +1,22 @@
 <?php
 //$messageStack->add('Super Orders v4.0 install started','success');
+$so_menu_title = 'Super Orders';
+if (!defined('SO_DB_INSTALLATION')) { 
+    // Auto installer info 
+    // Perhaps SO installed prior to this flag being created 
 
+    /* Find configuation group ID of Super Orders */
+    $sql = "SELECT configuration_group_id FROM ".TABLE_CONFIGURATION_GROUP." WHERE configuration_group_title='".$so_menu_title."' LIMIT 1";
+    $result = $db->Execute($sql);
+    if ($result->RecordCount()) {
+       $so_configuration_id = $result->fields['configuration_group_id'];
+   
+       // Add to DB
+       $auto_install_sql = "INSERT IGNORE INTO ".DB_PREFIX."configuration (configuration_id, configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, use_function, set_function) VALUES (NULL, 'Super Orders DB Update Complete?', 'SO_DB_INSTALLATION', 'Yes', 'Has the installation been done?', '".$so_configuration_id."', 200, now(), now(), NULL, 'zen_cfg_select_option(array(''Yes''),')";
+       define('SO_DB_INSTALLATION', 'Yes');
+    }
+}
+if (!defined('SO_DB_INSTALLATION') || SO_DB_INSTALLATION == 'No') { 
 /* Upgrade DB cleanup - Remove existing Super Orders configuration tables items */
     $sql = "DELETE FROM ".DB_PREFIX."configuration WHERE configuration_key LIKE '%MODULE_PAYMENT_PURCHASE_ORDER%'";
     $db->Execute($sql);
@@ -12,7 +28,7 @@
 /* Upgrade DB cleanup - Remove existing Super Orders payment types */
 $result = $db->Execute("SHOW TABLES LIKE '".DB_PREFIX."so_payment_types'");
 
-if ($result->RecordCount) {
+if ($result->RecordCount()) {
     $sql = "TRUNCATE TABLE ".DB_PREFIX."so_payment_types";
     $db->Execute($sql);
 }
@@ -167,7 +183,6 @@ $sql = "CREATE TABLE IF NOT EXISTS ".DB_PREFIX."so_payment_types (
         $db->Execute($sql);
     }
 
-    $so_menu_title = 'Super Orders';
     $so_menu_text = 'Settings for Super Order Features';
 
     /* find if Super Orders Configuration Group Exists */
@@ -246,8 +261,11 @@ $sql = "CREATE TABLE IF NOT EXISTS ".DB_PREFIX."so_payment_types (
 //-- SUPER ORDERS VERSION
     $sql = "INSERT IGNORE INTO ".DB_PREFIX."configuration (configuration_id, configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, use_function, set_function) VALUES (NULL, 'Super Orders Version', 'SO_VERSION', '4.0.10', 'Super Orders version', '".$so_configuration_id."', 100, NULL, now(), NULL, NULL)";
     $db->Execute($sql);
+// -- AUTO INSTALLER CONTROL FLAG
+    $auto_install_sql = "INSERT IGNORE INTO ".DB_PREFIX."configuration (configuration_id, configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, use_function, set_function) VALUES (NULL, 'Super Orders DB Update Complete?', 'SO_DB_INSTALLATION', 'Yes', 'Has the installation been done?', '".$so_configuration_id."', 200, now(), now(), NULL, 'zen_cfg_select_option(array(''Yes''),')";
+    $db->Execute($auto_install_sql);
 
-
+/*
    if(file_exists(DIR_FS_ADMIN . DIR_WS_INCLUDES . 'auto_loaders/config.so.php'))
     {
         if(!unlink(DIR_FS_ADMIN . DIR_WS_INCLUDES . 'auto_loaders/config.so.php'))
@@ -255,7 +273,7 @@ $sql = "CREATE TABLE IF NOT EXISTS ".DB_PREFIX."so_payment_types (
 		$messageStack->add('The auto-loader file '.DIR_FS_ADMIN.'includes/auto_loaders/config.so.php has not been deleted. For this module to work you must delete the '.DIR_FS_ADMIN.'includes/auto_loaders/config.so.php file manually.  Before you post on the Zen Cart forum to ask, YES you are REALLY supposed to follow these instructions and delete the '.DIR_FS_ADMIN.'includes/auto_loaders/config.so.php file.','error');
 	};
     }
-
+*/
        $messageStack->add('Super Orders v4.0 install completed!','success');
 
     // find next sort order in admin_pages table
@@ -333,3 +351,4 @@ $sql = "CREATE TABLE IF NOT EXISTS ".DB_PREFIX."so_payment_types (
         'BOX_REPORTS_SUPER_REPORT_CASH', 'FILENAME_SUPER_REPORT_CASH',
         '', 'reports', 'Y',
         $admin_page_sort);
+}
