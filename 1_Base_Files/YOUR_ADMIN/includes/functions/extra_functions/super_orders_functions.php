@@ -46,7 +46,7 @@ function update_status($oID, $new_status, $notified = 0, $comments = '') {
                 '" . $new_status . "',
                 now(),
                 '" . $cust_notified . "',
-                '" . $comments . "')");
+                '" . zen_db_prepare_input($comments) . "')");
 
   $db->Execute("UPDATE " . TABLE_ORDERS . " SET
                 orders_status = '" . $new_status . "', last_modified = now()
