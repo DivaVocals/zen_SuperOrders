@@ -1,3 +1,8 @@
+This is a development version of Super Orders. If you install the code from this repo on your live site, you will need to make sure that you THOROUGHLY test. There is NO SUPPORT on the Zen Cart forums for development versions of this module.
+
+USE AT YOUR OWN RISK ON A LIVE SITE!!!!
+==================================================
+
 zen_SuperOrders
 ===============
 
